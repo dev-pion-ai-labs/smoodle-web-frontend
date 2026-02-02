@@ -110,6 +110,9 @@ const Input = forwardRef(function Input(
 
 export default Input
 
+// Named export for convenience
+export { Input }
+
 /**
  * Textarea variant
  */
