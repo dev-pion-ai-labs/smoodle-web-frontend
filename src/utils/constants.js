@@ -30,12 +30,12 @@ export const ROUTES = {
   ADMIN: '/admin',
 }
 
-// Credit Costs
+// Credit Costs (all types cost 1 credit currently)
 export const CREDIT_COSTS = {
   text: 1,
-  image: 2,
-  audio: 3,
-  video: 5,
+  image: 1,
+  audio: 1,
+  video: 1,
 }
 
 // File Size Limits (in bytes)

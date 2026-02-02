@@ -3,6 +3,7 @@ import { Image, Mic, Video, Coins, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { CREDIT_COSTS } from '@utils/constants'
 import { verifyImage, verifyAudio, verifyVideo } from '@services/verifyService'
+import { getCurrentUser } from '@services/authService'
 import { useAuthStore } from '@store/authStore'
 import { useVerifyStore } from '@store/verifyStore'
 import FileUpload from '@components/common/FileUpload'
@@ -80,12 +81,13 @@ export default function FileVerifier({ type, onInsufficientCredits }) {
       setCurrentResult(result)
       addToHistory(result)
 
-      // Update credits from backend response or deduct locally
-      if (result.remaining_credits !== undefined) {
-        updateCredits(result.remaining_credits)
-      } else {
-        const newCredits = credits - (result.credits_used ?? creditCost)
-        updateCredits(Math.max(0, newCredits))
+      // Fetch updated user to get accurate credits from backend
+      try {
+        const updatedUser = await getCurrentUser()
+        updateCredits(updatedUser.credits)
+      } catch {
+        // Fallback: deduct locally if user fetch fails
+        updateCredits(Math.max(0, credits - 1))
       }
 
       // Clear file
