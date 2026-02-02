@@ -157,7 +157,12 @@ export async function logout() {
 export async function getCurrentUser() {
   try {
     const response = await api.get('/users/me')
-    return response.data
+    const user = response.data
+    // Normalize: backend uses 'name', frontend uses 'full_name'
+    return {
+      ...user,
+      full_name: user.name || user.full_name,
+    }
   } catch (error) {
     throw error.response?.data?.message || error.response?.data?.detail || 'Failed to fetch user profile.'
   }

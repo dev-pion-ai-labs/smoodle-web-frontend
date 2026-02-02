@@ -89,7 +89,8 @@ export default function History() {
         typeFilter === 'all' ? null : typeFilter
       )
 
-      let items = response.data || []
+      // Backend returns { items, total, page, pages, limit }
+      let items = response.items || []
 
       // Sort client-side (API may not support sort)
       if (sortOrder === 'oldest') {
@@ -100,7 +101,7 @@ export default function History() {
       setPagination((prev) => ({
         ...prev,
         total: response.total || items.length,
-        totalPages: response.total_pages || Math.ceil((response.total || items.length) / prev.limit),
+        totalPages: response.pages || Math.ceil((response.total || items.length) / prev.limit),
       }))
     } catch (err) {
       setError(err)
@@ -132,11 +133,16 @@ export default function History() {
   }
 
   const getContentPreview = (item) => {
-    if (item.content_type === 'text' && item.text_content) {
-      return truncateText(item.text_content, 60)
+    // Backend returns text_preview for text verifications (first 100 chars)
+    if (item.content_type === 'text' && item.text_preview) {
+      return truncateText(item.text_preview, 60)
     }
     if (item.file_url) {
       const fileName = item.file_url.split('/').pop()
+      return truncateText(fileName, 40)
+    }
+    if (item.file_key) {
+      const fileName = item.file_key.split('/').pop()
       return truncateText(fileName, 40)
     }
     return `${item.content_type} verification`
@@ -312,7 +318,9 @@ export default function History() {
  */
 function HistoryCard({ item, preview, onView, onDelete }) {
   const Icon = typeIcons[item.content_type] || FileText
-  const aiScore = item.ai_score ?? (1 - (item.human_score ?? 0.5))
+  // Backend returns human_score as 0-100 integer, convert to AI score (0-1)
+  const humanScore = item.human_score ?? 50
+  const aiScore = item.ai_score ?? (1 - humanScore / 100)
 
   return (
     <Card

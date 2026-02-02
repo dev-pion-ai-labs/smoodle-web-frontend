@@ -38,16 +38,15 @@ export default function Login() {
     setIsLoading(true)
     try {
       // Login to get tokens
-      const response = await login(data.email, data.password)
-      const { access_token, refresh_token } = response.data
+      const tokenResponse = await login(data.email, data.password)
+      const { access_token, refresh_token } = tokenResponse
 
       // Store tokens temporarily to fetch user profile
       localStorage.setItem('access_token', access_token)
       localStorage.setItem('refresh_token', refresh_token)
 
       // Fetch user profile
-      const userResponse = await getCurrentUser()
-      const user = userResponse.data
+      const user = await getCurrentUser()
 
       // Update auth store
       loginUser(user, access_token, refresh_token)

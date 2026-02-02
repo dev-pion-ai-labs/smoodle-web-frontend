@@ -39,8 +39,7 @@ export default function GoogleCallback() {
         }
 
         // Fetch user profile
-        const userResponse = await getCurrentUser()
-        const user = userResponse.data
+        const user = await getCurrentUser()
 
         // Login with user data
         loginUser(user, accessToken, refreshToken)

@@ -45,16 +45,20 @@ export default function TextVerifier({ onInsufficientCredits }) {
     setVerifyError(null)
 
     try {
-      const response = await verifyText(text)
-      const result = response.data
+      // verifyText returns the result directly (not wrapped)
+      const result = await verifyText(text)
 
       // Update local state
       setCurrentResult(result)
       addToHistory(result)
 
-      // Update credits
-      const newCredits = credits - (result.credits_used ?? creditCost)
-      updateCredits(Math.max(0, newCredits))
+      // Update credits from backend response or deduct locally
+      if (result.remaining_credits !== undefined) {
+        updateCredits(result.remaining_credits)
+      } else {
+        const newCredits = credits - (result.credits_used ?? creditCost)
+        updateCredits(Math.max(0, newCredits))
+      }
 
       toast.success('Verification complete!')
     } catch (error) {
