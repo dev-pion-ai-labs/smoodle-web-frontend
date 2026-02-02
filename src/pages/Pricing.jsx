@@ -7,10 +7,6 @@ import {
   Building2,
   Coins,
   ArrowRight,
-  Sparkles,
-  Shield,
-  Clock,
-  Headphones,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { cn } from '@utils/cn'
@@ -18,12 +14,9 @@ import { ROUTES } from '@utils/constants'
 import { openRazorpayCheckout, loadRazorpayScript } from '@utils/razorpay'
 import { createOrder, verifyPayment } from '@services/paymentService'
 import { useAuthStore } from '@store/authStore'
-import Navbar from '@components/layout/Navbar'
-import Footer from '@components/layout/Footer'
+import DashboardLayout from '@components/layout/DashboardLayout'
 import Card from '@components/common/Card'
 import Button from '@components/common/Button'
-import { Spinner } from '@components/common/Loader'
-import { PlanBadge } from '@components/common/Badge'
 
 // Subscription plans
 const plans = [
@@ -238,324 +231,194 @@ export default function Pricing() {
   }
 
   return (
-    <div className="min-h-screen bg-light">
-      <Navbar />
-
-      <main className="pt-20">
-        {/* Hero Section */}
-        <section className="py-16 text-center">
-          <div className="max-w-4xl mx-auto px-4">
-            <h1 className="font-heading text-4xl md:text-5xl font-bold text-dark mb-4">
-              Simple, Transparent Pricing
-            </h1>
-            <p className="text-lg text-gray max-w-2xl mx-auto">
-              Choose the plan that works for you. All plans include access to our
-              AI detection technology.
-            </p>
-          </div>
-        </section>
+    <DashboardLayout>
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="font-heading text-2xl font-bold text-dark">Pricing</h1>
+          <p className="text-gray mt-1">
+            Choose a plan or buy credits to verify content
+          </p>
+        </div>
 
         {/* Plans Section */}
-        <section className="pb-16">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {plans.map((plan) => {
-                const Icon = plan.icon
-                const isCurrent = currentPlan === plan.id
-                const isLoading = loadingPlan === plan.id
+        <section className="mb-12">
+          <h2 className="font-heading text-lg font-semibold text-dark mb-4">
+            Subscription Plans
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {plans.map((plan) => {
+              const Icon = plan.icon
+              const isCurrent = currentPlan === plan.id
+              const isLoading = loadingPlan === plan.id
 
-                return (
-                  <Card
-                    key={plan.id}
-                    className={cn(
-                      'relative flex flex-col',
-                      plan.popular && 'border-2 border-primary shadow-lg scale-[1.02]'
-                    )}
-                  >
-                    {/* Popular badge */}
-                    {plan.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <span className="px-4 py-1 bg-primary text-white text-sm font-medium rounded-full">
-                          Most Popular
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Header */}
-                    <div className="text-center mb-6 pt-2">
-                      <div
-                        className={cn(
-                          'w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4',
-                          plan.popular ? 'bg-primary text-white' : 'bg-gray/10 text-gray'
-                        )}
-                      >
-                        <Icon className="w-7 h-7" />
-                      </div>
-                      <h3 className="font-heading font-bold text-xl text-dark mb-1">
-                        {plan.name}
-                      </h3>
-                      <p className="text-sm text-gray">{plan.description}</p>
+              return (
+                <Card
+                  key={plan.id}
+                  className={cn(
+                    'relative flex flex-col',
+                    plan.popular && 'border-2 border-primary shadow-lg'
+                  )}
+                >
+                  {/* Popular badge */}
+                  {plan.popular && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                      <span className="px-4 py-1 bg-primary text-white text-sm font-medium rounded-full">
+                        Most Popular
+                      </span>
                     </div>
+                  )}
 
-                    {/* Price */}
-                    <div className="text-center mb-6">
-                      <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-2xl text-gray">₹</span>
-                        <span className="font-heading text-5xl font-bold text-dark">
-                          {plan.price.toLocaleString()}
-                        </span>
-                        {plan.period && (
-                          <span className="text-gray">/{plan.period}</span>
-                        )}
-                      </div>
-                      <p className="text-sm text-primary font-medium mt-2">
-                        {plan.creditsLabel}
-                      </p>
+                  {/* Header */}
+                  <div className="text-center mb-6 pt-2">
+                    <div
+                      className={cn(
+                        'w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3',
+                        plan.popular ? 'bg-primary text-white' : 'bg-gray/10 text-gray'
+                      )}
+                    >
+                      <Icon className="w-6 h-6" />
                     </div>
+                    <h3 className="font-heading font-bold text-lg text-dark mb-1">
+                      {plan.name}
+                    </h3>
+                    <p className="text-sm text-gray">{plan.description}</p>
+                  </div>
 
-                    {/* Features */}
-                    <ul className="space-y-3 mb-8 flex-1">
-                      {plan.features.map((feature, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <Check className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
-                          <span className="text-sm text-dark">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  {/* Price */}
+                  <div className="text-center mb-6">
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span className="text-xl text-gray">₹</span>
+                      <span className="font-heading text-4xl font-bold text-dark">
+                        {plan.price.toLocaleString()}
+                      </span>
+                      {plan.period && (
+                        <span className="text-gray">/{plan.period}</span>
+                      )}
+                    </div>
+                    <p className="text-sm text-primary font-medium mt-2">
+                      {plan.creditsLabel}
+                    </p>
+                  </div>
 
-                    {/* CTA */}
-                    {isCurrent ? (
-                      <Button variant="outline" fullWidth disabled>
-                        Current Plan
-                      </Button>
-                    ) : plan.contactSales ? (
-                      <Button
-                        variant={plan.popular ? 'primary' : 'outline'}
-                        fullWidth
-                        onClick={() => handlePlanUpgrade(plan)}
-                      >
-                        Contact Sales
-                        <ArrowRight className="w-4 h-4 ml-1" />
-                      </Button>
-                    ) : (
-                      <Button
-                        variant={plan.popular ? 'primary' : 'outline'}
-                        fullWidth
-                        loading={isLoading}
-                        disabled={isLoading || !!loadingPlan}
-                        onClick={() => handlePlanUpgrade(plan)}
-                      >
-                        {plan.cta}
-                      </Button>
-                    )}
-                  </Card>
-                )
-              })}
-            </div>
+                  {/* Features */}
+                  <ul className="space-y-2.5 mb-6 flex-1">
+                    {plan.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-success flex-shrink-0 mt-0.5" />
+                        <span className="text-sm text-dark">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTA */}
+                  {isCurrent ? (
+                    <Button variant="outline" fullWidth disabled>
+                      Current Plan
+                    </Button>
+                  ) : plan.contactSales ? (
+                    <Button
+                      variant={plan.popular ? 'primary' : 'outline'}
+                      fullWidth
+                      onClick={() => handlePlanUpgrade(plan)}
+                    >
+                      Contact Sales
+                      <ArrowRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  ) : (
+                    <Button
+                      variant={plan.popular ? 'primary' : 'outline'}
+                      fullWidth
+                      loading={isLoading}
+                      disabled={isLoading || !!loadingPlan}
+                      onClick={() => handlePlanUpgrade(plan)}
+                    >
+                      {plan.cta}
+                    </Button>
+                  )}
+                </Card>
+              )
+            })}
           </div>
         </section>
 
         {/* Credit Packs Section */}
-        <section id="credit-packs" className="py-16 bg-white">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="font-heading text-3xl font-bold text-dark mb-4">
-                Need More Credits?
-              </h2>
-              <p className="text-gray max-w-2xl mx-auto">
-                Buy additional credits anytime. No subscription required.
-              </p>
-            </div>
+        <section id="credit-packs">
+          <h2 className="font-heading text-lg font-semibold text-dark mb-4">
+            Credit Packs
+          </h2>
+          <p className="text-gray text-sm mb-6">
+            Buy additional credits anytime. No subscription required.
+          </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {creditPacks.map((pack) => {
-                const isLoading = loadingPack === pack.id
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {creditPacks.map((pack) => {
+              const isLoading = loadingPack === pack.id
 
-                return (
-                  <Card
-                    key={pack.id}
-                    className={cn(
-                      'relative text-center',
-                      pack.popular && 'border-2 border-primary'
-                    )}
-                  >
-                    {pack.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <span className="px-3 py-0.5 bg-primary text-white text-xs font-medium rounded-full">
-                          Best Value
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="pt-2">
-                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-                        <Coins className="w-6 h-6 text-primary" />
-                      </div>
-
-                      <h3 className="font-heading font-bold text-lg text-dark mb-1">
-                        {pack.name}
-                      </h3>
-
-                      <p className="text-3xl font-heading font-bold text-primary mb-1">
-                        {pack.credits.toLocaleString()}
-                      </p>
-                      <p className="text-sm text-gray mb-4">credits</p>
-
-                      <p className="text-2xl font-heading font-bold text-dark mb-4">
-                        ₹{pack.price.toLocaleString()}
-                      </p>
-
-                      <Button
-                        variant={pack.popular ? 'primary' : 'outline'}
-                        fullWidth
-                        loading={isLoading}
-                        disabled={isLoading || !!loadingPack || !isAuthenticated}
-                        onClick={() => handlePackPurchase(pack)}
-                      >
-                        {isAuthenticated ? 'Buy Now' : 'Login to Buy'}
-                      </Button>
+              return (
+                <Card
+                  key={pack.id}
+                  className={cn(
+                    'relative text-center',
+                    pack.popular && 'border-2 border-primary'
+                  )}
+                >
+                  {pack.popular && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                      <span className="px-3 py-0.5 bg-primary text-white text-xs font-medium rounded-full">
+                        Best Value
+                      </span>
                     </div>
-                  </Card>
-                )
-              })}
-            </div>
+                  )}
 
-            {!isAuthenticated && (
-              <p className="text-center text-sm text-gray mt-6">
-                <Link to={ROUTES.LOGIN} className="text-primary hover:underline">
-                  Login
-                </Link>{' '}
-                or{' '}
-                <Link to={ROUTES.SIGNUP} className="text-primary hover:underline">
-                  create an account
-                </Link>{' '}
-                to purchase credits.
-              </p>
-            )}
-          </div>
-        </section>
+                  <div className="pt-2">
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-3">
+                      <Coins className="w-5 h-5 text-primary" />
+                    </div>
 
-        {/* Features Section */}
-        <section className="py-16">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="font-heading text-3xl font-bold text-dark mb-4">
-                Why Choose Smoodle?
-              </h2>
-            </div>
+                    <h3 className="font-heading font-semibold text-dark mb-1">
+                      {pack.name}
+                    </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                {
-                  icon: Sparkles,
-                  title: 'State-of-the-Art AI',
-                  description: 'Powered by the latest AI detection models',
-                },
-                {
-                  icon: Shield,
-                  title: 'Secure & Private',
-                  description: 'Your content is never stored or shared',
-                },
-                {
-                  icon: Clock,
-                  title: 'Fast Results',
-                  description: 'Get verification results in seconds',
-                },
-                {
-                  icon: Headphones,
-                  title: 'Great Support',
-                  description: 'Friendly support team ready to help',
-                },
-              ].map((feature, i) => (
-                <div key={i} className="text-center">
-                  <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <feature.icon className="w-7 h-7 text-primary" />
+                    <p className="text-2xl font-heading font-bold text-primary mb-0.5">
+                      {pack.credits.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-gray mb-3">credits</p>
+
+                    <p className="text-xl font-heading font-bold text-dark mb-4">
+                      ₹{pack.price.toLocaleString()}
+                    </p>
+
+                    <Button
+                      variant={pack.popular ? 'primary' : 'outline'}
+                      fullWidth
+                      size="sm"
+                      loading={isLoading}
+                      disabled={isLoading || !!loadingPack || !isAuthenticated}
+                      onClick={() => handlePackPurchase(pack)}
+                    >
+                      {isAuthenticated ? 'Buy Now' : 'Login to Buy'}
+                    </Button>
                   </div>
-                  <h3 className="font-heading font-semibold text-dark mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-gray">{feature.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-16 bg-white">
-          <div className="max-w-3xl mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="font-heading text-3xl font-bold text-dark mb-4">
-                Frequently Asked Questions
-              </h2>
-            </div>
-
-            <div className="space-y-4">
-              {[
-                {
-                  q: 'What is a credit?',
-                  a: 'A credit is used each time you verify content. Text verification costs 1 credit, images cost 2, audio costs 3, and video costs 5 credits.',
-                },
-                {
-                  q: 'Do credits expire?',
-                  a: 'Credits from one-time purchases never expire. Subscription credits reset monthly on your billing date.',
-                },
-                {
-                  q: 'Can I cancel my subscription?',
-                  a: 'Yes, you can cancel anytime from your Settings page. You\'ll retain access until the end of your billing period.',
-                },
-                {
-                  q: 'Is my payment secure?',
-                  a: 'Yes, all payments are processed securely through Razorpay, a PCI-DSS compliant payment gateway.',
-                },
-              ].map((faq, i) => (
-                <Card key={i}>
-                  <h3 className="font-heading font-semibold text-dark mb-2">
-                    {faq.q}
-                  </h3>
-                  <p className="text-gray text-sm">{faq.a}</p>
                 </Card>
-              ))}
-            </div>
+              )
+            })}
           </div>
-        </section>
 
-        {/* CTA Section */}
-        <section className="py-16">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <h2 className="font-heading text-3xl font-bold text-dark mb-4">
-              Ready to Get Started?
-            </h2>
-            <p className="text-gray mb-8 max-w-2xl mx-auto">
-              Join thousands of users who trust Smoodle for AI content verification.
+          {!isAuthenticated && (
+            <p className="text-center text-sm text-gray mt-4">
+              <Link to={ROUTES.LOGIN} className="text-primary hover:underline">
+                Login
+              </Link>{' '}
+              or{' '}
+              <Link to={ROUTES.SIGNUP} className="text-primary hover:underline">
+                create an account
+              </Link>{' '}
+              to purchase credits.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {isAuthenticated ? (
-                <Link to={ROUTES.DASHBOARD}>
-                  <Button size="lg" icon={Zap}>
-                    Go to Dashboard
-                  </Button>
-                </Link>
-              ) : (
-                <>
-                  <Link to={ROUTES.SIGNUP}>
-                    <Button size="lg" icon={Zap}>
-                      Start Free
-                    </Button>
-                  </Link>
-                  <Link to={ROUTES.LOGIN}>
-                    <Button variant="outline" size="lg">
-                      Login
-                    </Button>
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
+          )}
         </section>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </DashboardLayout>
   )
 }

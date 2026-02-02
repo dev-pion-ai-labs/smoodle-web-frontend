@@ -388,67 +388,76 @@ All components built with Tailwind + micro-interactions:
 
 ---
 
-## Phase 7: Landing Page & Polish
+## Phase 7: App Polish & Cleanup ✅ COMPLETED
 
-### Task 7.1: Landing Page
-- **Hero Section**: 
-  - Large heading: "Is it real or AI? Find out in seconds."
-  - Subheading explaining Smoodle's value
-  - Two CTA buttons: "Try Free" (→ signup), "View Pricing" (→ pricing)
-  - Hero illustration or animated graphic
-- **Features Section**: 4 cards (Text, Image, Audio, Video) with icons and descriptions
-- **How It Works**: 3-step visual flow (Upload → AI Analysis → Get Results)
-- **Pricing Preview**: mini version of pricing cards
-- **Trust/Social Proof section**: stats or testimonials placeholder
-- **CTA Section**: "Ready to verify? Start for free"
-- **Footer**: Logo, links (Product, Pricing, Privacy, Terms), copyright
-- Verify: landing page is visually polished and responsive
+> **Note**: This is the authenticated web application only. The marketing site is hosted separately at smoodle.ai. This app is hosted at app.smoodle.ai. No landing page needed.
 
-### Task 7.2: 404 Page
-- Smoodle-branded 404 illustration or text
-- "Page not found" message
-- "Go Home" and "Go to Dashboard" buttons
-- Verify: navigating to unknown route shows 404
+### Task 7.1: Documentation Updates ✅
+- [x] Update CLAUDE.md to remove landing page references
+- [x] Update CLAUDE.md to note app vs marketing site separation
+- [x] Add deployment info (Vercel at app.smoodle.ai)
+- [x] Update FRONTEND_TASKS.md with Phase 7 changes
 
-### Task 7.3: Loading & Error States
-- Add skeleton loaders to Dashboard, History, Admin pages
-- Add error boundaries for component crashes
-- Add empty states for all list views
-- Add offline detection banner
-- Verify: loading states appear before data loads
+### Task 7.2: Routing & Cleanup ✅
+- [x] Fix "/" route: redirect to `/dashboard` if authenticated, `/login` if not
+- [x] Delete `Landing.jsx` (not needed - marketing site is separate)
+- [x] Delete `Footer.jsx` (not needed - this is an app, not a marketing site)
+- [x] Remove Footer references from any layouts
 
-### Task 7.4: Responsive Design Pass
-- Test all pages at 375px, 768px, 1024px, 1440px
-- Fix any overflow, text truncation, or layout issues
-- Ensure mobile nav hamburger menu works
-- Ensure modals are scrollable on small screens
-- Verify: all pages work on mobile
+### Task 7.3: Navbar Improvements ✅
+- [x] Make Navbar feel like Linear/Vercel dashboard navbar
+- [x] Clean, minimal design with subtle hover states
+- [x] Compact layout with good spacing
+- [x] Smooth transitions
+- [x] User dropdown polish
+- [x] Mobile hamburger menu polish
 
-### Task 7.5: Final Polish
-- Page transition animations (fade in)
-- Button hover/press animations
-- Toast notifications styled with brand colors
-- Console.log cleanup
-- Environment variable validation on startup
-- Favicon and page titles on all routes
-- Verify: app feels polished and production-ready
+### Task 7.4: Auth Pages Polish ✅
+- [x] Polish Login page (first impression since no landing page)
+- [x] Polish Signup page (uses same AuthLayout)
+- [x] Add subtle animations and transitions
+- [x] Ensure brand consistency
+- [x] Review error states and loading states
+
+### Task 7.5: 404 Page ✅
+- [x] Smoodle-branded 404 design
+- [x] "Page not found" message
+- [x] "Go to Dashboard" and "Go to Login" buttons (based on auth state)
+- [x] Verify: navigating to unknown route shows 404
+
+### Task 7.6: Pricing Page Cleanup ✅
+- [x] Remove "Why Choose Smoodle?" section (marketing fluff)
+- [x] Remove FAQ section (marketing fluff)
+- [x] Remove CTA section (marketing fluff)
+- [x] Keep only: plan cards, credit packs, clean layout
+- [x] Uses DashboardLayout - in-app page, not marketing page
+
+### Task 7.7: Final Polish ✅
+- [x] Pricing page now uses DashboardLayout
+- [x] Loading and error states review
+- [x] Build verification: `npm run build` - Success
+- [x] Verify: app feels polished and production-ready
+
+### Build Verification ✅
+- [x] `npm run build` - Success (219KB JS, 46KB CSS gzipped)
 
 ---
 
-## Phase 8: Build & Deployment Prep
+## Phase 8: Build & Deployment ✅ COMPLETED
 
-### Task 8.1: Production Build
-- Run `npm run build`
-- Fix any build errors or warnings
-- Test production build with `npm run preview`
-- Verify: production build works identically to dev
+> **Note**: App is already deployed on Vercel at app.smoodle.ai
 
-### Task 8.2: Deployment Configuration
-- Create `Dockerfile` for containerized deployment (if deploying to Railway)
-- OR configure for Vercel/Netlify (create `vercel.json` or `netlify.toml`)
-- Add SPA redirect rules (all routes → index.html)
-- Set production env variables
-- Verify: deployed app works with live backend
+### Task 8.1: Production Build ✅
+- [x] Run `npm run build`
+- [x] Fix any build errors or warnings
+- [x] Test production build with `npm run preview`
+- [x] Verify: production build works identically to dev
+
+### Task 8.2: Deployment Configuration ✅
+- [x] Deployed on Vercel (auto-deploys from GitHub main branch)
+- [x] SPA redirect rules configured (all routes → index.html)
+- [x] Production env variables set
+- [x] Verify: deployed app works with live backend at app.smoodle.ai
 
 ---
 

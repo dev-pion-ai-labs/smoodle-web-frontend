@@ -1,12 +1,18 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ROUTES } from '@utils/constants'
 import PrivateRoute from './PrivateRoute'
 import AdminRoute from './AdminRoute'
 import PageLoader from '@components/common/Loader'
+import { useAuthStore } from '@store/authStore'
+
+// Home redirect component - redirects based on auth state
+function HomeRedirect() {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  return <Navigate to={isAuthenticated ? ROUTES.DASHBOARD : ROUTES.LOGIN} replace />
+}
 
 // Lazy load all pages for better performance
-const Landing = lazy(() => import('@pages/Landing'))
 const Login = lazy(() => import('@pages/Login'))
 const Signup = lazy(() => import('@pages/Signup'))
 const VerifyOTP = lazy(() => import('@pages/VerifyOTP'))
@@ -25,8 +31,10 @@ export default function AppRouter() {
     <BrowserRouter>
       <Suspense fallback={<PageLoader />}>
         <Routes>
+          {/* Home redirect - auth-based */}
+          <Route path={ROUTES.HOME} element={<HomeRedirect />} />
+
           {/* Public routes */}
-          <Route path={ROUTES.HOME} element={<Landing />} />
           <Route path={ROUTES.LOGIN} element={<Login />} />
           <Route path={ROUTES.SIGNUP} element={<Signup />} />
           <Route path={ROUTES.VERIFY_OTP} element={<VerifyOTP />} />

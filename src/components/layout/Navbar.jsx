@@ -10,7 +10,6 @@ import {
   Settings,
   LogOut,
   Shield,
-  Coins,
 } from 'lucide-react'
 import { useAuthStore } from '@store/authStore'
 import { useUIStore } from '@store/uiStore'
@@ -61,14 +60,14 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white border-b border-gray/10 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link to={isAuthenticated ? ROUTES.DASHBOARD : ROUTES.HOME} className="flex-shrink-0">
             <div className="flex items-center gap-2">
-              <img src={logo} alt="Smoodle" className="h-8 w-auto rounded-lg" />
-              <span className="font-heading font-bold text-lg text-dark hidden sm:block">
+              <img src={logo} alt="Smoodle" className="h-7 w-auto rounded-md" />
+              <span className="font-heading font-semibold text-dark hidden sm:block">
                 smoodle
               </span>
             </div>
@@ -76,7 +75,7 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           {isAuthenticated && (
-            <div className="hidden md:flex items-center gap-1">
+            <div className="hidden md:flex items-center gap-0.5">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path
                 return (
@@ -84,10 +83,10 @@ export default function Navbar() {
                     key={link.path}
                     to={link.path}
                     className={cn(
-                      'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                      'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
                       isActive
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-gray hover:text-dark hover:bg-gray/5'
+                        ? 'text-dark bg-gray-100'
+                        : 'text-gray-600 hover:text-dark hover:bg-gray-50'
                     )}
                   >
                     {link.label}
@@ -98,10 +97,10 @@ export default function Navbar() {
                 <Link
                   to={ROUTES.ADMIN}
                   className={cn(
-                    'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                    'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
                     location.pathname === ROUTES.ADMIN
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-gray hover:text-dark hover:bg-gray/5'
+                      ? 'text-dark bg-gray-100'
+                      : 'text-gray-600 hover:text-dark hover:bg-gray-50'
                   )}
                 >
                   Admin
@@ -111,14 +110,13 @@ export default function Navbar() {
           )}
 
           {/* Right side */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {isAuthenticated ? (
               <>
                 {/* Credits badge */}
-                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-primary-light rounded-full">
-                  <Coins className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-semibold text-primary font-mono">
-                    {credits}
+                <div className="hidden sm:flex items-center px-2.5 py-1 bg-gray-100 rounded-md">
+                  <span className="text-xs font-medium text-gray-700 font-mono">
+                    {credits} credits
                   </span>
                 </div>
 
@@ -127,20 +125,20 @@ export default function Navbar() {
                   <button
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className={cn(
-                      'flex items-center gap-2 p-1.5 rounded-lg transition-all duration-200',
-                      'hover:bg-gray/5 focus:outline-none focus:ring-2 focus:ring-primary/50',
-                      dropdownOpen && 'bg-gray/5'
+                      'flex items-center gap-1.5 pl-1.5 pr-2 py-1 rounded-md transition-colors',
+                      'hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200',
+                      dropdownOpen && 'bg-gray-50'
                     )}
                   >
                     {/* Avatar */}
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-sm font-semibold text-primary">
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center">
+                      <span className="text-xs font-medium text-white">
                         {user?.full_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U'}
                       </span>
                     </div>
                     <ChevronDown
                       className={cn(
-                        'w-4 h-4 text-gray transition-transform duration-200 hidden sm:block',
+                        'w-3.5 h-3.5 text-gray-500 transition-transform',
                         dropdownOpen && 'rotate-180'
                       )}
                     />
@@ -148,23 +146,20 @@ export default function Navbar() {
 
                   {/* Dropdown menu */}
                   {dropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray/10 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="absolute right-0 mt-1.5 w-52 bg-white rounded-lg shadow-lg border border-gray-200 py-1 animate-in fade-in slide-in-from-top-1 duration-150">
                       {/* User info */}
-                      <div className="px-4 py-2 border-b border-gray/10">
-                        <p className="font-medium text-dark truncate">
+                      <div className="px-3 py-2 border-b border-gray-100">
+                        <p className="font-medium text-sm text-dark truncate">
                           {user?.full_name || 'User'}
                         </p>
-                        <p className="text-sm text-gray truncate">{user?.email}</p>
+                        <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                       </div>
 
                       {/* Credits (mobile) */}
-                      <div className="sm:hidden px-4 py-2 border-b border-gray/10">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Coins className="w-4 h-4 text-primary" />
-                          <span className="font-semibold text-primary font-mono">
-                            {credits} credits
-                          </span>
-                        </div>
+                      <div className="sm:hidden px-3 py-2 border-b border-gray-100">
+                        <p className="text-xs font-medium text-gray-700 font-mono">
+                          {credits} credits
+                        </p>
                       </div>
 
                       {/* Menu items */}
@@ -172,7 +167,7 @@ export default function Navbar() {
                         <Link
                           to={ROUTES.SETTINGS}
                           onClick={() => setDropdownOpen(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray hover:text-dark hover:bg-gray/5 transition-colors"
+                          className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:text-dark hover:bg-gray-50 transition-colors"
                         >
                           <Settings className="w-4 h-4" />
                           Settings
@@ -181,7 +176,7 @@ export default function Navbar() {
                           <Link
                             to={ROUTES.ADMIN}
                             onClick={() => setDropdownOpen(false)}
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray hover:text-dark hover:bg-gray/5 transition-colors"
+                            className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:text-dark hover:bg-gray-50 transition-colors"
                           >
                             <Shield className="w-4 h-4" />
                             Admin Panel
@@ -190,10 +185,10 @@ export default function Navbar() {
                       </div>
 
                       {/* Logout */}
-                      <div className="border-t border-gray/10 pt-1">
+                      <div className="border-t border-gray-100 pt-1">
                         <button
                           onClick={handleLogout}
-                          className="flex items-center gap-2 w-full px-4 py-2 text-sm text-error hover:bg-error/5 transition-colors"
+                          className="flex items-center gap-2 w-full px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
                         >
                           <LogOut className="w-4 h-4" />
                           Log out
@@ -206,7 +201,7 @@ export default function Navbar() {
                 {/* Mobile menu button */}
                 <button
                   onClick={toggleMobileMenu}
-                  className="md:hidden p-2 rounded-lg hover:bg-gray/5 transition-colors"
+                  className="md:hidden p-1.5 rounded-md hover:bg-gray-50 transition-colors"
                   aria-label="Toggle menu"
                 >
                   {mobileMenuOpen ? (
@@ -217,16 +212,16 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <Link
                   to={ROUTES.LOGIN}
-                  className="px-4 py-2 text-sm font-medium text-gray hover:text-dark transition-colors"
+                  className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-dark rounded-md hover:bg-gray-50 transition-colors"
                 >
                   Log in
                 </Link>
                 <Link
                   to={ROUTES.SIGNUP}
-                  className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark transition-all duration-200 hover:scale-[0.98] active:scale-95"
+                  className="px-3 py-1.5 bg-dark text-white text-sm font-medium rounded-md hover:bg-gray-800 transition-colors"
                 >
                   Sign up
                 </Link>
@@ -238,8 +233,8 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {isAuthenticated && mobileMenuOpen && (
-        <div className="md:hidden border-t border-gray/10 bg-white animate-in slide-in-from-top-2 duration-200">
-          <div className="px-4 py-3 space-y-1">
+        <div className="md:hidden border-t border-gray-200/80 bg-white animate-in slide-in-from-top-1 duration-150">
+          <div className="px-3 py-2 space-y-0.5">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path
               const Icon = link.icon
@@ -248,13 +243,13 @@ export default function Navbar() {
                   key={link.path}
                   to={link.path}
                   className={cn(
-                    'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+                    'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors',
                     isActive
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-gray hover:text-dark hover:bg-gray/5'
+                      ? 'bg-gray-100 text-dark'
+                      : 'text-gray-600 hover:text-dark hover:bg-gray-50'
                   )}
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className="w-4 h-4" />
                   {link.label}
                 </Link>
               )
@@ -263,13 +258,13 @@ export default function Navbar() {
               <Link
                 to={ROUTES.ADMIN}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+                  'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors',
                   location.pathname === ROUTES.ADMIN
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-gray hover:text-dark hover:bg-gray/5'
+                    ? 'bg-gray-100 text-dark'
+                    : 'text-gray-600 hover:text-dark hover:bg-gray-50'
                 )}
               >
-                <Shield className="w-5 h-5" />
+                <Shield className="w-4 h-4" />
                 Admin
               </Link>
             )}

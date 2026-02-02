@@ -4,9 +4,12 @@
 
 Smoodle Verified is an AI content verification platform that detects whether text, images, audio, and video content is AI-generated or human-created. This is the React web frontend that connects to an existing FastAPI backend already deployed on Railway.
 
+**Important:** This is the authenticated web application only. The marketing site is hosted separately at smoodle.ai. This app is hosted at app.smoodle.ai.
+
 **Live Backend:** `https://smoodle-backend-production.up.railway.app`
 **API Docs (Swagger):** `https://smoodle-backend-production.up.railway.app/docs`
 **GitHub Repo:** `https://github.com/dev-pion-ai-labs/smoodle-web-frontend`
+**Live App:** `https://app.smoodle.ai` (Vercel deployment)
 
 ## Tech Stack
 
@@ -180,31 +183,19 @@ smoodle-web-frontend/
 │   │   │   └── ScoreGauge.jsx
 │   │   ├── layout/
 │   │   │   ├── Navbar.jsx
-│   │   │   ├── Sidebar.jsx
-│   │   │   ├── Footer.jsx
 │   │   │   └── DashboardLayout.jsx
 │   │   ├── auth/
-│   │   │   ├── LoginForm.jsx
-│   │   │   ├── SignupForm.jsx
+│   │   │   ├── AuthLayout.jsx
 │   │   │   ├── OTPInput.jsx
-│   │   │   ├── ForgotPasswordForm.jsx
-│   │   │   ├── ResetPasswordForm.jsx
 │   │   │   └── GoogleAuthButton.jsx
 │   │   ├── verification/
 │   │   │   ├── TextVerifier.jsx
 │   │   │   ├── FileVerifier.jsx
 │   │   │   ├── VerificationResult.jsx
 │   │   │   └── VerificationHistory.jsx
-│   │   ├── payment/
-│   │   │   ├── PricingCards.jsx
-│   │   │   ├── CreditPackCards.jsx
-│   │   │   └── PaymentHistory.jsx
-│   │   └── admin/
-│   │       ├── StatsCards.jsx
-│   │       ├── UsersTable.jsx
-│   │       └── VerificationsTable.jsx
+│   │   └── payment/
+│   │       └── UpgradeCreditsModal.jsx
 │   ├── pages/
-│   │   ├── Landing.jsx          # Public landing page
 │   │   ├── Login.jsx
 │   │   ├── Signup.jsx
 │   │   ├── VerifyOTP.jsx
@@ -213,7 +204,7 @@ smoodle-web-frontend/
 │   │   ├── GoogleCallback.jsx   # Handles OAuth redirect
 │   │   ├── Dashboard.jsx        # Main verification page
 │   │   ├── History.jsx          # Verification history
-│   │   ├── Pricing.jsx          # Plans & credit packs
+│   │   ├── Pricing.jsx          # Plans & credit packs (in-app)
 │   │   ├── Settings.jsx         # User profile & settings
 │   │   ├── AdminDashboard.jsx   # Admin stats & management
 │   │   └── NotFound.jsx         # 404 page
@@ -228,13 +219,11 @@ smoodle-web-frontend/
 │   │   ├── paymentService.js    # Payment API calls
 │   │   ├── userService.js       # User API calls
 │   │   └── adminService.js      # Admin API calls
-│   ├── hooks/
-│   │   ├── useAuth.js           # Auth hook
-│   │   └── useVerification.js   # Verification hook
 │   ├── utils/
 │   │   ├── constants.js         # App constants, routes
 │   │   ├── helpers.js           # Utility functions
-│   │   └── validators.js        # Zod schemas
+│   │   ├── validators.js        # Zod schemas
+│   │   └── razorpay.js          # Razorpay integration
 │   ├── routes/
 │   │   ├── AppRouter.jsx        # Main router
 │   │   ├── PrivateRoute.jsx     # Auth guard
@@ -265,17 +254,11 @@ VITE_APP_URL=http://localhost:5173
 
 ## Page-by-Page Requirements
 
-### 1. Landing Page (`/`)
-- Hero section with tagline: "Is it real or AI? Find out in seconds."
-- Brief description of what Smoodle does
-- CTA buttons: "Try Free" → signup, "View Pricing" → pricing
-- Feature cards: Text, Image, Audio, Video verification
-- How it works: 3-step flow (Upload → Analyze → Get Results)
-- Pricing preview section
-- Footer with links
+### 1. Root Route (`/`)
+Redirects to `/dashboard` if authenticated, `/login` if not. No landing page — this is an authenticated app only.
 
 ### 2. Auth Pages (`/login`, `/signup`, `/verify-otp`, `/forgot-password`, `/reset-password`)
-- Clean centered card layout with logo
+- Clean centered card layout with logo on subtle gradient background
 - Email/password form with validation
 - Google OAuth button ("Continue with Google")
 - OTP page: 6-digit input with auto-focus between digits
@@ -283,6 +266,7 @@ VITE_APP_URL=http://localhost:5173
 - Loading states on all buttons
 - Error messages from API displayed inline
 - Redirect to dashboard after successful auth
+- Premium, inviting design — these are the first impression
 
 ### 3. Google OAuth Callback (`/auth/google/callback`)
 - Loading spinner page
@@ -291,7 +275,7 @@ VITE_APP_URL=http://localhost:5173
 - Shows error if auth failed
 
 ### 4. Dashboard (`/dashboard`) — MAIN PAGE
-- Top bar: credit balance, user name, profile dropdown
+- Navbar: Logo (links to /dashboard), nav links, credit balance pill, user dropdown
 - 4 tab interface: Text | Image | Audio | Video
 - **Text tab:** Large textarea, paste text, click "Verify"
 - **Image tab:** Drag-and-drop or click to upload, preview image
@@ -316,21 +300,16 @@ VITE_APP_URL=http://localhost:5173
 - Filter by type (text/image/audio/video)
 - Sort by date
 
-### 6. Pricing Page (`/pricing`)
+### 6. Pricing Page (`/pricing`) — In-App Page
 - Plan comparison cards: Free / Pro / Enterprise
 - Feature checkmarks per plan
 - Current plan highlighted
 - "Upgrade" button → triggers Razorpay checkout
 - Credit packs section below (buy additional credits)
-- Razorpay integration flow:
-  1. User clicks "Buy" → call `/payments/create-order`
-  2. Open Razorpay checkout modal with order_id
-  3. On success → call `/payments/verify` with payment details
-  4. Show success toast, update credit balance
-  5. On failure → show error toast
+- Clean, no marketing fluff — just plan cards and credit packs
 
 ### 7. Settings Page (`/settings`)
-- Profile section: name, email (read-only), avatar
+- Profile section: name, email (read-only)
 - Update profile form
 - Current plan & credits display
 - Subscription management (cancel option)
@@ -346,7 +325,7 @@ VITE_APP_URL=http://localhost:5173
 
 ### 9. 404 Page
 - Friendly "page not found" message
-- Link back to dashboard/home
+- "Go to Dashboard" and "Go to Login" buttons
 
 ## Key Implementation Rules
 
@@ -366,7 +345,7 @@ VITE_APP_URL=http://localhost:5173
 
 8. **Smooth transitions.** Use Tailwind transition classes for hover effects, page transitions, and modal animations.
 
-9. **SEO basics.** Page titles via React Helmet (or document.title), meta descriptions on landing page.
+9. **Page titles.** Use document.title on every route. Format: "Page Name | Smoodle Verified"
 
 10. **No TypeScript.** Keep everything in plain JavaScript (.jsx files). This is intentional for speed of development.
 
@@ -386,9 +365,9 @@ npm run build
 npm run preview
 ```
 
-## Task Execution Order
+## Deployment
 
-Follow the phases in `FRONTEND_TASKS.md` sequentially. Complete each phase before moving to the next. Test each feature against the live backend API before proceeding.
+The app is deployed on Vercel at app.smoodle.ai. Push to main branch triggers automatic deployment.
 
 ## Important Notes
 
