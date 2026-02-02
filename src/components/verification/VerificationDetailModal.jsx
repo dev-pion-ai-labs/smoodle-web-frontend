@@ -46,15 +46,21 @@ export default function VerificationDetailModal({ isOpen, onClose, item }) {
     human_score,
     verdict,
     confidence,
+    confidence_score,
     details,
     credits_used,
     created_at,
     text_content,
+    text_preview,
     file_url,
   } = item
 
   const Icon = typeIcons[content_type] || FileText
-  const aiProbability = ai_score ?? (1 - (human_score ?? 0.5))
+  // Backend returns human_score as 0-100 integer
+  const humanScoreNormalized = (human_score ?? 50) / 100
+  const aiProbability = ai_score ?? (1 - humanScoreNormalized)
+  // Use confidence_score from backend if available
+  const confidenceLevel = confidence || (confidence_score >= 0.9 ? 'high' : confidence_score >= 0.7 ? 'medium' : 'low')
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg">
@@ -86,16 +92,16 @@ export default function VerificationDetailModal({ isOpen, onClose, item }) {
       {/* Verdict & Confidence */}
       <div className="flex items-center justify-center gap-3 mb-6">
         <VerdictBadge verdict={verdict} className="text-base px-4 py-2" />
-        <ConfidenceBadge confidence={confidence} />
+        <ConfidenceBadge confidence={confidenceLevel} />
       </div>
 
       {/* Content Preview */}
-      {content_type === 'text' && text_content && (
+      {content_type === 'text' && (text_content || text_preview) && (
         <div className="mb-6">
           <h3 className="text-sm font-medium text-dark mb-2">Content</h3>
           <div className="p-4 bg-gray/5 rounded-xl max-h-48 overflow-y-auto">
             <p className="text-sm text-gray whitespace-pre-wrap">
-              {text_content}
+              {text_content || text_preview}
             </p>
           </div>
         </div>
