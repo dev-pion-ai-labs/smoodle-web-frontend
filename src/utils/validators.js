@@ -71,6 +71,9 @@ export const updateProfileSchema = z.object({
   full_name: nameSchema,
 })
 
+// Alias for backwards compatibility
+export const profileSchema = updateProfileSchema
+
 // Text verification schema
 export const textVerificationSchema = z.object({
   text: z
