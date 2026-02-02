@@ -32,7 +32,8 @@ export default function RecentVerifications({ onViewDetails, className }) {
       try {
         setLoading(true)
         const response = await getHistory(1, 5)
-        setHistory(response.data || [])
+        // Backend returns { items, total, page, pages, limit }
+        setHistory(response.items || [])
       } catch (err) {
         setError(err)
       } finally {
@@ -52,7 +53,8 @@ export default function RecentVerifications({ onViewDetails, className }) {
     try {
       setLoading(true)
       const response = await getHistory(1, 5)
-      setHistory(response.data || [])
+      // Backend returns { items, total, page, pages, limit }
+      setHistory(response.items || [])
     } catch (err) {
       setError(err)
     } finally {
@@ -141,15 +143,22 @@ export default function RecentVerifications({ onViewDetails, className }) {
  */
 function HistoryItem({ item, onClick }) {
   const Icon = typeIcons[item.content_type] || FileText
-  const aiScore = item.ai_score ?? (1 - (item.human_score ?? 0.5))
+  // Backend returns human_score as 0-100 integer, convert to AI score (0-1)
+  const humanScore = item.human_score ?? 50
+  const aiScore = item.ai_score ?? (1 - humanScore / 100)
 
   // Get content preview
   const getPreview = () => {
-    if (item.content_type === 'text' && item.text_content) {
-      return truncateText(item.text_content, 40)
+    // Backend returns text_preview for text verifications (first 100 chars)
+    if (item.content_type === 'text' && item.text_preview) {
+      return truncateText(item.text_preview, 40)
     }
     if (item.file_url) {
       const fileName = item.file_url.split('/').pop()
+      return truncateText(fileName, 30)
+    }
+    if (item.file_key) {
+      const fileName = item.file_key.split('/').pop()
       return truncateText(fileName, 30)
     }
     return `${item.content_type} verification`

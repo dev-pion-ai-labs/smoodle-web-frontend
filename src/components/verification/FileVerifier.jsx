@@ -71,19 +71,22 @@ export default function FileVerifier({ type, onInsufficientCredits }) {
     setUploadProgress(0)
 
     try {
-      const response = await config.verifyFn(file, (progress) => {
+      // verifyFn returns the result directly (not wrapped)
+      const result = await config.verifyFn(file, (progress) => {
         setUploadProgress(progress)
       })
-
-      const result = response.data
 
       // Update local state
       setCurrentResult(result)
       addToHistory(result)
 
-      // Update credits
-      const newCredits = credits - (result.credits_used ?? creditCost)
-      updateCredits(Math.max(0, newCredits))
+      // Update credits from backend response or deduct locally
+      if (result.remaining_credits !== undefined) {
+        updateCredits(result.remaining_credits)
+      } else {
+        const newCredits = credits - (result.credits_used ?? creditCost)
+        updateCredits(Math.max(0, newCredits))
+      }
 
       // Clear file
       setFile(null)

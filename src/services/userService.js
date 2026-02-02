@@ -26,8 +26,17 @@ export async function getProfile() {
  */
 export async function updateProfile(data) {
   try {
-    const response = await api.patch('/users/me', data)
-    return response.data
+    // Map full_name to name for backend compatibility
+    const payload = {
+      name: data.full_name || data.name,
+    }
+    const response = await api.patch('/users/me', payload)
+    const user = response.data
+    // Normalize: backend uses 'name', frontend uses 'full_name'
+    return {
+      ...user,
+      full_name: user.name || user.full_name,
+    }
   } catch (error) {
     throw error.response?.data?.message || error.response?.data?.detail || 'Failed to update profile'
   }
