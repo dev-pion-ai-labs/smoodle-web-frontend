@@ -35,7 +35,9 @@ export default function VerificationResult({
   } = result
 
   // Calculate display score (AI probability as percentage)
-  const aiProbability = ai_score ?? (1 - (human_score ?? 0.5))
+  // Backend returns human_score as 0-100 integer, convert to 0-1 scale
+  const humanScoreNormalized = (human_score ?? 50) / 100
+  const aiProbability = ai_score ?? (1 - humanScoreNormalized)
 
   return (
     <Card
@@ -141,7 +143,9 @@ export function VerificationResultCompact({
   className,
 }) {
   const { content_type, ai_score, human_score, verdict, created_at } = result
-  const aiProbability = ai_score ?? (1 - (human_score ?? 0.5))
+  // Backend returns human_score as 0-100 integer, convert to 0-1 scale
+  const humanScoreNormalized = (human_score ?? 50) / 100
+  const aiProbability = ai_score ?? (1 - humanScoreNormalized)
 
   // Content type icons mapping
   const typeLabels = {

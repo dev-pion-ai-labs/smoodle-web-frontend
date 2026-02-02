@@ -99,16 +99,12 @@ export default function AdminDashboard() {
       const data = await getStats()
       setStats(data)
     } catch (err) {
-      // Use mock data if API fails
+      // Use mock data matching backend structure if API fails
       setStats({
-        total_users: 1234,
-        total_verifications: 5678,
-        total_revenue: 125000,
-        active_subscriptions: 89,
-        users_trend: 12,
-        verifications_trend: 8,
-        revenue_trend: 15,
-        subscriptions_trend: -3,
+        users: { today: 0, week: 0, month: 0, total: 0 },
+        verifications: { total: { today: 0, week: 0, month: 0, total: 0 } },
+        revenue: { total: { today: 0, week: 0, month: 0, total: 0 } },
+        subscriptions: { free: 0, pro: 0, enterprise: 0, total_active: 0 },
       })
     } finally {
       setStatsLoading(false)
@@ -119,7 +115,8 @@ export default function AdminDashboard() {
     try {
       setUsersLoading(true)
       const response = await getUsers(usersPagination.page, usersPagination.limit, usersSearch)
-      setUsers(response.data || response.users || [])
+      // Backend returns { items, total, page, pages, limit }
+      setUsers(response.items || response.data || response.users || [])
       setUsersPagination((prev) => ({
         ...prev,
         total: response.total || 0,
@@ -135,7 +132,8 @@ export default function AdminDashboard() {
     try {
       setVerificationsLoading(true)
       const response = await getVerifications(verificationsPagination.page, verificationsPagination.limit)
-      setVerifications(response.data || response.verifications || [])
+      // Backend returns { items, total, page, pages, limit }
+      setVerifications(response.items || response.data || response.verifications || [])
       setVerificationsPagination((prev) => ({
         ...prev,
         total: response.total || 0,
@@ -151,7 +149,8 @@ export default function AdminDashboard() {
     try {
       setPaymentsLoading(true)
       const response = await getPayments(paymentsPagination.page, paymentsPagination.limit)
-      setPayments(response.data || response.payments || [])
+      // Backend returns { items, total, page, pages, limit }
+      setPayments(response.items || response.data || response.payments || [])
       setPaymentsPagination((prev) => ({
         ...prev,
         total: response.total || 0,
@@ -232,31 +231,27 @@ export default function AdminDashboard() {
             <>
               <StatsCard
                 title="Total Users"
-                value={stats?.total_users?.toLocaleString() || '0'}
+                value={(stats?.users?.total || 0).toLocaleString()}
                 icon={Users}
-                trend={stats?.users_trend}
-                trendLabel="vs last month"
+                trendLabel={`${stats?.users?.month || 0} this month`}
               />
               <StatsCard
                 title="Verifications"
-                value={stats?.total_verifications?.toLocaleString() || '0'}
+                value={(stats?.verifications?.total?.total || 0).toLocaleString()}
                 icon={FileCheck}
-                trend={stats?.verifications_trend}
-                trendLabel="vs last month"
+                trendLabel={`${stats?.verifications?.total?.month || 0} this month`}
               />
               <StatsCard
                 title="Revenue"
-                value={`₹${(stats?.total_revenue || 0).toLocaleString()}`}
+                value={`₹${((stats?.revenue?.total?.total || 0) / 100).toLocaleString()}`}
                 icon={IndianRupee}
-                trend={stats?.revenue_trend}
-                trendLabel="vs last month"
+                trendLabel={`₹${((stats?.revenue?.total?.month || 0) / 100).toLocaleString()} this month`}
               />
               <StatsCard
                 title="Active Subscriptions"
-                value={stats?.active_subscriptions?.toLocaleString() || '0'}
+                value={(stats?.subscriptions?.total_active || 0).toLocaleString()}
                 icon={CreditCard}
-                trend={stats?.subscriptions_trend}
-                trendLabel="vs last month"
+                trendLabel={`${stats?.subscriptions?.pro || 0} Pro, ${stats?.subscriptions?.enterprise || 0} Enterprise`}
               />
             </>
           )}
