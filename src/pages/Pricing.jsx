@@ -81,12 +81,11 @@ const plans = [
   },
 ]
 
-// Credit packs for one-time purchase
+// Credit packs for one-time purchase (IDs must match backend: pack_50, pack_200, pack_500)
 const creditPacks = [
-  { id: 'starter', name: 'Starter', credits: 50, price: 99 },
-  { id: 'popular', name: 'Popular', credits: 200, price: 299, popular: true },
-  { id: 'pro', name: 'Pro', credits: 500, price: 599 },
-  { id: 'enterprise', name: 'Enterprise', credits: 2000, price: 1999 },
+  { id: 'pack_50', name: '50 Credits', credits: 50, price: 99 },
+  { id: 'pack_200', name: '200 Credits', credits: 200, price: 349, popular: true },
+  { id: 'pack_500', name: '500 Credits', credits: 500, price: 799 },
 ]
 
 export default function Pricing() {
