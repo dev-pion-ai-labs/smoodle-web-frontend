@@ -110,17 +110,14 @@ export async function resetPassword(token, new_password) {
  * Get Google OAuth URL
  * Redirects user to Google consent screen
  */
-export function getGoogleAuthUrl() {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL
-  return `${baseUrl}/auth/google`
-}
-
-/**
- * Initiate Google OAuth flow
- * Redirects the browser to Google OAuth
- */
-export function initiateGoogleAuth() {
-  window.location.href = getGoogleAuthUrl()
+export async function initiateGoogleAuth() {
+  try {
+    const response = await api.get('/auth/google')
+    const authUrl = response.data.auth_url
+    window.location.href = authUrl
+  } catch (error) {
+    throw error.response?.data?.message || 'Failed to initiate Google login.'
+  }
 }
 
 /**
@@ -173,7 +170,6 @@ export default {
   resendOTP,
   forgotPassword,
   resetPassword,
-  getGoogleAuthUrl,
   initiateGoogleAuth,
   refreshToken,
   logout,

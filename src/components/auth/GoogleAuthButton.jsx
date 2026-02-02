@@ -12,13 +12,15 @@ export default function GoogleAuthButton({
 }) {
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleClick = () => {
-    setIsLoading(true)
-    // Small delay for visual feedback before redirect
-    setTimeout(() => {
-      initiateGoogleAuth()
-    }, 200)
-  }
+  const handleClick = async () => {
+      setIsLoading(true)
+      try {
+        await initiateGoogleAuth()
+      } catch (error) {
+        setIsLoading(false)
+        console.error('Google auth failed:', error)
+      }
+    }
 
   return (
     <button
