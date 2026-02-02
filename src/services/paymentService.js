@@ -14,7 +14,12 @@ import api from './api'
  */
 export async function createOrder(data) {
   try {
-    const response = await api.post('/payments/create-order', data)
+    // Backend requires order_type field: 'subscription' or 'credits'
+    const orderData = {
+      ...data,
+      order_type: data.plan_id ? 'subscription' : 'credits',
+    }
+    const response = await api.post('/payments/create-order', orderData)
     return response.data
   } catch (error) {
     throw error.response?.data?.message || error.response?.data?.detail || 'Failed to create order'

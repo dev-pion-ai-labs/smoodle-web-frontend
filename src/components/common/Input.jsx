@@ -187,6 +187,7 @@ export const Select = forwardRef(function Select(
     fullWidth = true,
     className,
     containerClassName,
+    children,
     ...props
   },
   ref
@@ -206,9 +207,11 @@ export const Select = forwardRef(function Select(
         className={cn(
           // Base styles
           'w-full px-4 py-2.5 rounded-xl border text-sm',
-          'bg-white text-dark',
+          'bg-white',
           'transition-all duration-200 ease-out',
           'cursor-pointer appearance-none',
+          // Text color - use explicit color to avoid inheritance issues
+          'text-[#1A1A2E]',
           // Focus styles
           'focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary',
           // Hover styles
@@ -218,23 +221,27 @@ export const Select = forwardRef(function Select(
             ? 'border-error focus:ring-error focus:border-error'
             : 'border-gray/20',
           // Background arrow
-          'bg-[url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%236B7280\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'/%3E%3C/svg%3E")]',
+          "bg-[url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E\")]",
           'bg-[length:1.25rem] bg-[right_0.75rem_center] bg-no-repeat pr-10',
           className
         )}
+        style={{ color: '#1A1A2E' }}
         {...props}
       >
-        <option value="" disabled>
-          {placeholder}
-        </option>
-        {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-          >
-            {option.label}
-          </option>
-        ))}
+        {children ? (
+          children
+        ) : (
+          <>
+            <option value="" disabled>
+              {placeholder}
+            </option>
+            {options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </>
+        )}
       </select>
 
       {/* Error message */}
