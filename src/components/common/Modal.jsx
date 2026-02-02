@@ -71,7 +71,7 @@ export default function Modal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
@@ -80,7 +80,7 @@ export default function Modal({
       {/* Backdrop */}
       <div
         className={cn(
-          'absolute inset-0 bg-dark/50 backdrop-blur-sm',
+          'fixed inset-0 bg-dark/50 backdrop-blur-sm',
           'animate-in fade-in duration-200'
         )}
       />
@@ -88,8 +88,9 @@ export default function Modal({
       {/* Modal content */}
       <div
         className={cn(
-          'relative w-full bg-white rounded-2xl shadow-xl',
+          'relative w-full bg-white rounded-2xl shadow-xl my-auto',
           'animate-in fade-in zoom-in-95 duration-200',
+          'max-h-[calc(100vh-2rem)] overflow-y-auto',
           sizes[size],
           className
         )}

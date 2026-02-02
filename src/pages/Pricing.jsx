@@ -94,7 +94,7 @@ export default function Pricing() {
   const [loadingPlan, setLoadingPlan] = useState(null)
   const [loadingPack, setLoadingPack] = useState(null)
 
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const isAuthenticated = useAuthStore((state) => !!state.accessToken)
   const user = useAuthStore((state) => state.user)
   const updateCredits = useAuthStore((state) => state.updateCredits)
 

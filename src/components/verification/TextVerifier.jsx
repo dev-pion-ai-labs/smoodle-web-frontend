@@ -4,6 +4,7 @@ import toast from 'react-hot-toast'
 import { cn } from '@utils/cn'
 import { CREDIT_COSTS } from '@utils/constants'
 import { verifyText } from '@services/verifyService'
+import { getCurrentUser } from '@services/authService'
 import { useAuthStore } from '@store/authStore'
 import { useVerifyStore } from '@store/verifyStore'
 import { Textarea } from '@components/common/Input'
@@ -52,12 +53,13 @@ export default function TextVerifier({ onInsufficientCredits }) {
       setCurrentResult(result)
       addToHistory(result)
 
-      // Update credits from backend response or deduct locally
-      if (result.remaining_credits !== undefined) {
-        updateCredits(result.remaining_credits)
-      } else {
-        const newCredits = credits - (result.credits_used ?? creditCost)
-        updateCredits(Math.max(0, newCredits))
+      // Fetch updated user to get accurate credits from backend
+      try {
+        const updatedUser = await getCurrentUser()
+        updateCredits(updatedUser.credits)
+      } catch {
+        // Fallback: deduct locally if user fetch fails
+        updateCredits(Math.max(0, credits - 1))
       }
 
       toast.success('Verification complete!')

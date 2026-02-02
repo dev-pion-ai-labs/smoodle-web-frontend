@@ -17,17 +17,8 @@ import {
   Mic,
   Video,
 } from 'lucide-react'
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts'
+// Charts removed - backend doesn't have chart endpoints yet
+// import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import toast from 'react-hot-toast'
 import { cn } from '@utils/cn'
 import { formatDateTime, truncateText } from '@utils/helpers'
@@ -37,8 +28,6 @@ import {
   adjustCredits,
   getVerifications,
   getPayments,
-  getVerificationChartData,
-  getRevenueChartData,
 } from '@services/adminService'
 import DashboardLayout from '@components/layout/DashboardLayout'
 import Card, { StatsCard } from '@components/common/Card'
@@ -60,10 +49,6 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState(null)
   const [statsLoading, setStatsLoading] = useState(true)
 
-  // Chart data
-  const [verificationChartData, setVerificationChartData] = useState([])
-  const [revenueChartData, setRevenueChartData] = useState([])
-  const [chartPeriod, setChartPeriod] = useState('30d')
 
   // Users state
   const [users, setUsers] = useState([])
@@ -95,7 +80,6 @@ export default function AdminDashboard() {
   // Fetch stats
   useEffect(() => {
     fetchStats()
-    fetchChartData()
   }, [])
 
   // Fetch data based on active tab
@@ -128,19 +112,6 @@ export default function AdminDashboard() {
       })
     } finally {
       setStatsLoading(false)
-    }
-  }
-
-  const fetchChartData = async () => {
-    try {
-      const [vData, rData] = await Promise.all([
-        getVerificationChartData(chartPeriod),
-        getRevenueChartData(chartPeriod),
-      ])
-      setVerificationChartData(vData)
-      setRevenueChartData(rData)
-    } catch (err) {
-      console.error('Failed to fetch chart data:', err)
     }
   }
 
@@ -238,7 +209,6 @@ export default function AdminDashboard() {
             icon={RefreshCw}
             onClick={() => {
               fetchStats()
-              fetchChartData()
               if (activeTab === 'users') fetchUsers()
               else if (activeTab === 'verifications') fetchVerifications()
               else if (activeTab === 'payments') fetchPayments()
@@ -292,79 +262,33 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* Charts */}
+        {/* Charts - Coming Soon */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Verifications Chart */}
           <Card>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-heading font-semibold text-dark">Verifications</h3>
-              <select
-                value={chartPeriod}
-                onChange={(e) => {
-                  setChartPeriod(e.target.value)
-                  fetchChartData()
-                }}
-                className="text-sm border border-gray/20 rounded-lg px-2 py-1"
-              >
-                <option value="7d">Last 7 days</option>
-                <option value="30d">Last 30 days</option>
-                <option value="90d">Last 90 days</option>
-              </select>
+              <h3 className="font-heading font-semibold text-dark">Verifications Over Time</h3>
             </div>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={verificationChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis
-                    dataKey="date"
-                    tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                    tick={{ fontSize: 12 }}
-                    stroke="#6B7280"
-                  />
-                  <YAxis tick={{ fontSize: 12 }} stroke="#6B7280" />
-                  <Tooltip
-                    labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                    formatter={(value) => [value, 'Verifications']}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#E8453C"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+            <div className="h-64 flex items-center justify-center bg-gray/5 rounded-lg">
+              <div className="text-center">
+                <FileCheck className="w-12 h-12 text-gray/30 mx-auto mb-2" />
+                <p className="text-gray font-medium">Analytics Coming Soon</p>
+                <p className="text-sm text-gray/60 mt-1">Verification trends will appear here</p>
+              </div>
             </div>
           </Card>
 
           {/* Revenue Chart */}
           <Card>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-heading font-semibold text-dark">Revenue</h3>
+              <h3 className="font-heading font-semibold text-dark">Revenue Over Time</h3>
             </div>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={revenueChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis
-                    dataKey="date"
-                    tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                    tick={{ fontSize: 12 }}
-                    stroke="#6B7280"
-                  />
-                  <YAxis
-                    tick={{ fontSize: 12 }}
-                    stroke="#6B7280"
-                    tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
-                  />
-                  <Tooltip
-                    labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                    formatter={(value) => [`₹${value.toLocaleString()}`, 'Revenue']}
-                  />
-                  <Bar dataKey="value" fill="#E8453C" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="h-64 flex items-center justify-center bg-gray/5 rounded-lg">
+              <div className="text-center">
+                <IndianRupee className="w-12 h-12 text-gray/30 mx-auto mb-2" />
+                <p className="text-gray font-medium">Analytics Coming Soon</p>
+                <p className="text-sm text-gray/60 mt-1">Revenue trends will appear here</p>
+              </div>
             </div>
           </Card>
         </div>
