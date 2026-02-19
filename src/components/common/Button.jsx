@@ -83,7 +83,7 @@ const Button = forwardRef(function Button(
       disabled={isDisabled}
       className={cn(
         // Base styles
-        'inline-flex items-center justify-center font-medium rounded-xl',
+        'inline-flex items-center justify-center font-medium rounded-xl cursor-pointer',
         'transition-all duration-200 ease-out',
         'focus:outline-none',
         // Micro-interactions

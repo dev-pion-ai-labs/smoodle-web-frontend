@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ROUTES } from '@utils/constants'
 import PrivateRoute from './PrivateRoute'
 import AdminRoute from './AdminRoute'
+import EnterpriseRoute from './EnterpriseRoute'
 import PageLoader from '@components/common/Loader'
 import { useAuthStore } from '@store/authStore'
 
@@ -23,6 +24,8 @@ const Dashboard = lazy(() => import('@pages/Dashboard'))
 const History = lazy(() => import('@pages/History'))
 const Pricing = lazy(() => import('@pages/Pricing'))
 const Settings = lazy(() => import('@pages/Settings'))
+const Audit = lazy(() => import('@pages/Audit'))
+const AuditHistory = lazy(() => import('@pages/AuditHistory'))
 const AdminDashboard = lazy(() => import('@pages/AdminDashboard'))
 const NotFound = lazy(() => import('@pages/NotFound'))
 
@@ -66,6 +69,32 @@ export default function AppRouter() {
               <PrivateRoute>
                 <Settings />
               </PrivateRoute>
+            }
+          />
+
+          {/* Enterprise routes */}
+          <Route
+            path={ROUTES.AUDIT_HISTORY}
+            element={
+              <EnterpriseRoute>
+                <AuditHistory />
+              </EnterpriseRoute>
+            }
+          />
+          <Route
+            path={ROUTES.AUDIT_RESULT}
+            element={
+              <EnterpriseRoute>
+                <Audit />
+              </EnterpriseRoute>
+            }
+          />
+          <Route
+            path={ROUTES.AUDIT}
+            element={
+              <EnterpriseRoute>
+                <Audit />
+              </EnterpriseRoute>
             }
           />
 
