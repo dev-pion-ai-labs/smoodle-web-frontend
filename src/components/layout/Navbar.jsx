@@ -10,6 +10,7 @@ import {
   Settings,
   LogOut,
   Shield,
+  ShieldCheck,
 } from 'lucide-react'
 import { useAuthStore } from '@store/authStore'
 import { useUIStore } from '@store/uiStore'
@@ -32,6 +33,7 @@ export default function Navbar() {
   const isAuthenticated = useAuthStore((state) => !!state.accessToken)
   const credits = user?.credits ?? 0
   const isAdmin = user?.role === 'admin' || user?.is_admin
+  const isEnterprise = user?.plan === 'enterprise'
 
   const { mobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useUIStore()
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -93,6 +95,19 @@ export default function Navbar() {
                   </Link>
                 )
               })}
+              {isEnterprise && (
+                <Link
+                  to={ROUTES.AUDIT}
+                  className={cn(
+                    'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
+                    location.pathname.startsWith('/audit')
+                      ? 'text-dark bg-gray-100'
+                      : 'text-gray-600 hover:text-dark hover:bg-gray-50'
+                  )}
+                >
+                  Audit
+                </Link>
+              )}
               {isAdmin && (
                 <Link
                   to={ROUTES.ADMIN}
@@ -172,6 +187,16 @@ export default function Navbar() {
                           <Settings className="w-4 h-4" />
                           Settings
                         </Link>
+                        {isEnterprise && (
+                          <Link
+                            to={ROUTES.AUDIT}
+                            onClick={() => setDropdownOpen(false)}
+                            className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:text-dark hover:bg-gray-50 transition-colors"
+                          >
+                            <ShieldCheck className="w-4 h-4" />
+                            Document Audit
+                          </Link>
+                        )}
                         {isAdmin && (
                           <Link
                             to={ROUTES.ADMIN}
@@ -254,6 +279,20 @@ export default function Navbar() {
                 </Link>
               )
             })}
+            {isEnterprise && (
+              <Link
+                to={ROUTES.AUDIT}
+                className={cn(
+                  'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                  location.pathname.startsWith('/audit')
+                    ? 'bg-gray-100 text-dark'
+                    : 'text-gray-600 hover:text-dark hover:bg-gray-50'
+                )}
+              >
+                <ShieldCheck className="w-4 h-4" />
+                Audit
+              </Link>
+            )}
             {isAdmin && (
               <Link
                 to={ROUTES.ADMIN}

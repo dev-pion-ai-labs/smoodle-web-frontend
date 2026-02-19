@@ -26,6 +26,11 @@ export const ROUTES = {
   HISTORY: '/history',
   SETTINGS: '/settings',
 
+  // Enterprise routes
+  AUDIT: '/audit',
+  AUDIT_RESULT: '/audit/:auditId',
+  AUDIT_HISTORY: '/audit/history',
+
   // Admin routes
   ADMIN: '/admin',
 }
@@ -38,11 +43,14 @@ export const CREDIT_COSTS = {
   video: 1,
 }
 
+export const AUDIT_CREDIT_COST = 10
+
 // File Size Limits (in bytes)
 export const FILE_SIZE_LIMITS = {
   image: 25 * 1024 * 1024, // 25MB
   audio: 50 * 1024 * 1024, // 50MB
   video: 100 * 1024 * 1024, // 100MB
+  audit: 50 * 1024 * 1024, // 50MB
 }
 
 // Accepted File Types
@@ -50,6 +58,7 @@ export const ACCEPTED_FILE_TYPES = {
   image: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
   audio: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a'],
   video: ['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/x-matroska', 'video/webm'],
+  audit: ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword', 'text/plain'],
 }
 
 // File Extensions for Display
@@ -57,6 +66,7 @@ export const FILE_EXTENSIONS = {
   image: '.jpg, .jpeg, .png, .gif, .webp',
   audio: '.mp3, .wav, .ogg, .m4a',
   video: '.mp4, .mov, .avi, .mkv, .webm',
+  audit: '.pdf, .docx, .doc, .txt',
 }
 
 // Verdict Types
@@ -121,8 +131,21 @@ export const PLAN_DETAILS = {
       'All verification types',
       'Priority processing',
       'API access',
+      'Document Audit (fact-checking)',
       'Buy additional credits',
       'Priority support',
     ],
   },
 }
+
+// Audit Pipeline Steps
+export const AUDIT_STEPS = [
+  { key: 'pending', label: 'Queued' },
+  { key: 'parsing', label: 'Parsing Document' },
+  { key: 'detecting', label: 'Detecting Context' },
+  { key: 'skill_building', label: 'Building Verification Skill' },
+  { key: 'extracting', label: 'Extracting Claims' },
+  { key: 'verifying', label: 'Verifying Claims' },
+  { key: 'generating_report', label: 'Generating Report' },
+  { key: 'complete', label: 'Complete' },
+]

@@ -3,14 +3,33 @@ import { Toaster } from 'react-hot-toast'
 import { HelmetProvider } from 'react-helmet-async'
 import AppRouter from '@routes/AppRouter'
 import { useAuthStore } from '@store/authStore'
+import { getProfile, getSubscription } from '@services/userService'
 
 function App() {
   const rehydrate = useAuthStore((state) => state.rehydrate)
+  const accessToken = useAuthStore((state) => state.accessToken)
+  const updateUser = useAuthStore((state) => state.updateUser)
 
   // Rehydrate auth state on app load
   useEffect(() => {
     rehydrate()
   }, [rehydrate])
+
+  // Fetch fresh profile + subscription on login / page load
+  useEffect(() => {
+    if (accessToken) {
+      Promise.all([
+        getProfile().catch(() => null),
+        getSubscription().catch(() => null),
+      ]).then(([profile, sub]) => {
+        const updates = { plan: sub?.plan || 'free' }
+        if (profile?.credits !== undefined) {
+          updates.credits = profile.credits
+        }
+        updateUser(updates)
+      })
+    }
+  }, [accessToken])
 
   return (
     <HelmetProvider>
