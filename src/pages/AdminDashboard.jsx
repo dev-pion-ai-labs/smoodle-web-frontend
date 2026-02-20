@@ -14,8 +14,9 @@ import {
   RefreshCw,
   FileText,
   Image,
-  Mic,
+  ScanFace,
   Video,
+  Music,
 } from 'lucide-react'
 // Charts removed - backend doesn't have chart endpoints yet
 // import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
@@ -40,8 +41,9 @@ import Modal from '@components/common/Modal'
 const typeIcons = {
   text: FileText,
   image: Image,
-  audio: Mic,
+  deepfake: ScanFace,
   video: Video,
+  audio: Music,
 }
 
 export default function AdminDashboard() {

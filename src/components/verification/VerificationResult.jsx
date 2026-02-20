@@ -151,8 +151,9 @@ export function VerificationResultCompact({
   const typeLabels = {
     text: 'Text',
     image: 'Image',
-    audio: 'Audio',
+    deepfake: 'Deepfake',
     video: 'Video',
+    audio: 'Music',
   }
 
   return (

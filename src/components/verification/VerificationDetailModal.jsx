@@ -2,7 +2,8 @@ import { useState } from 'react'
 import {
   FileText,
   Image,
-  Mic,
+  ScanFace,
+  Music,
   Video,
   ChevronDown,
   ChevronUp,
@@ -20,15 +21,17 @@ import { VerdictBadge, ConfidenceBadge } from '@components/common/Badge'
 const typeIcons = {
   text: FileText,
   image: Image,
-  audio: Mic,
+  deepfake: ScanFace,
   video: Video,
+  audio: Music,
 }
 
 const typeLabels = {
   text: 'Text',
   image: 'Image',
-  audio: 'Audio',
+  deepfake: 'Deepfake',
   video: 'Video',
+  audio: 'Music',
 }
 
 /**
@@ -112,7 +115,7 @@ export default function VerificationDetailModal({ isOpen, onClose, item }) {
         <div className="mb-6">
           <h3 className="text-sm font-medium text-dark mb-2">File</h3>
           <div className="p-4 bg-gray/5 rounded-xl">
-            {content_type === 'image' ? (
+            {(content_type === 'image' || content_type === 'deepfake') ? (
               <div className="space-y-3">
                 <img
                   src={file_url}

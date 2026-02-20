@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Image, Mic, Video, Coins, AlertCircle } from 'lucide-react'
+import { Image, Music, ScanFace, Video, Coins, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { CREDIT_COSTS } from '@utils/constants'
-import { verifyImage, verifyAudio, verifyVideo } from '@services/verifyService'
+import { verifyImage, verifyAudio, verifyVideo, verifyDeepfake } from '@services/verifyService'
 import { getCurrentUser } from '@services/authService'
 import { useAuthStore } from '@store/authStore'
 import { useVerifyStore } from '@store/verifyStore'
@@ -15,9 +15,14 @@ const typeConfig = {
     label: 'Image',
     verifyFn: verifyImage,
   },
+  deepfake: {
+    icon: ScanFace,
+    label: 'Deepfake',
+    verifyFn: verifyDeepfake,
+  },
   audio: {
-    icon: Mic,
-    label: 'Audio',
+    icon: Music,
+    label: 'Music',
     verifyFn: verifyAudio,
   },
   video: {
