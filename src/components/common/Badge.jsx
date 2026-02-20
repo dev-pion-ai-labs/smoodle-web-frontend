@@ -117,8 +117,9 @@ export function ContentTypeBadge({ type, className }) {
   const typeConfig = {
     text: { variant: 'primary', label: 'Text' },
     image: { variant: 'info', label: 'Image' },
-    audio: { variant: 'warning', label: 'Audio' },
+    deepfake: { variant: 'error', label: 'Deepfake' },
     video: { variant: 'error', label: 'Video' },
+    audio: { variant: 'warning', label: 'Music' },
   }
 
   const config = typeConfig[type] || { variant: 'default', label: type }

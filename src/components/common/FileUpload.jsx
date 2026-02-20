@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
-import { Upload, X, File, Image, Music, Video, AlertCircle } from 'lucide-react'
+import { Upload, X, File, Image, Music, ScanFace, Video, AlertCircle } from 'lucide-react'
 import { cn } from '@utils/cn'
 import { formatFileSize, validateFile } from '@utils/helpers'
 import { FILE_EXTENSIONS, FILE_SIZE_LIMITS } from '@utils/constants'
@@ -22,9 +22,15 @@ const typeConfig = {
     accept: 'image/jpeg,image/png,image/gif,image/webp',
     color: 'text-blue-500 bg-blue-50',
   },
+  deepfake: {
+    icon: ScanFace,
+    label: 'image or video',
+    accept: 'image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime,video/x-msvideo,video/x-matroska,video/webm',
+    color: 'text-rose-500 bg-rose-50',
+  },
   audio: {
     icon: Music,
-    label: 'audio file',
+    label: 'music file',
     accept: 'audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/x-m4a',
     color: 'text-amber-500 bg-amber-50',
   },
@@ -69,8 +75,8 @@ export default function FileUpload({
         return
       }
 
-      // Create preview for images
-      if (type === 'image' && selectedFile.type.startsWith('image/')) {
+      // Create preview for images (including deepfake image uploads)
+      if ((type === 'image' || (type === 'deepfake' && selectedFile.type.startsWith('image/'))) && selectedFile.type.startsWith('image/')) {
         const url = URL.createObjectURL(selectedFile)
         setPreview(url)
       } else {
@@ -218,7 +224,7 @@ export default function FileUpload({
         >
           <div className="flex items-start gap-4">
             {/* Thumbnail or icon */}
-            {type === 'image' && preview ? (
+            {(type === 'image' || type === 'deepfake') && preview ? (
               <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray/10 flex-shrink-0">
                 <img
                   src={preview}

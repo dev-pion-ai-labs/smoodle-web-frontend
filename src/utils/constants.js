@@ -39,6 +39,7 @@ export const ROUTES = {
 export const CREDIT_COSTS = {
   text: 1,
   image: 1,
+  deepfake: 1,
   audio: 1,
   video: 1,
 }
@@ -48,6 +49,7 @@ export const AUDIT_CREDIT_COST = 10
 // File Size Limits (in bytes)
 export const FILE_SIZE_LIMITS = {
   image: 25 * 1024 * 1024, // 25MB
+  deepfake: 100 * 1024 * 1024, // 100MB (supports video)
   audio: 50 * 1024 * 1024, // 50MB
   video: 100 * 1024 * 1024, // 100MB
   audit: 50 * 1024 * 1024, // 50MB
@@ -56,6 +58,7 @@ export const FILE_SIZE_LIMITS = {
 // Accepted File Types
 export const ACCEPTED_FILE_TYPES = {
   image: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+  deepfake: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/x-matroska', 'video/webm'],
   audio: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a'],
   video: ['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/x-matroska', 'video/webm'],
   audit: ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword', 'text/plain'],
@@ -64,6 +67,7 @@ export const ACCEPTED_FILE_TYPES = {
 // File Extensions for Display
 export const FILE_EXTENSIONS = {
   image: '.jpg, .jpeg, .png, .gif, .webp',
+  deepfake: '.jpg, .jpeg, .png, .gif, .webp, .mp4, .mov, .avi, .mkv, .webm',
   audio: '.mp3, .wav, .ogg, .m4a',
   video: '.mp4, .mov, .avi, .mkv, .webm',
   audit: '.pdf, .docx, .doc, .txt',
@@ -102,7 +106,8 @@ export const PLAN_DETAILS = {
       '10 free credits',
       'Text verification',
       'Image verification',
-      'Audio verification',
+      'Deepfake detection',
+      'Music verification',
       'Video verification',
       'Verification history',
     ],

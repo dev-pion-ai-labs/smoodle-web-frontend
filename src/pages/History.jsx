@@ -3,8 +3,9 @@ import {
   History as HistoryIcon,
   FileText,
   Image,
-  Mic,
+  ScanFace,
   Video,
+  Music,
   Filter,
   ArrowUpDown,
   Trash2,
@@ -32,16 +33,18 @@ import toast from 'react-hot-toast'
 const typeIcons = {
   text: FileText,
   image: Image,
-  audio: Mic,
+  deepfake: ScanFace,
   video: Video,
+  audio: Music,
 }
 
 const typeOptions = [
   { value: 'all', label: 'All Types' },
   { value: 'text', label: 'Text' },
   { value: 'image', label: 'Image' },
-  { value: 'audio', label: 'Audio' },
+  { value: 'deepfake', label: 'Deepfake' },
   { value: 'video', label: 'Video' },
+  { value: 'audio', label: 'Music' },
 ]
 
 const sortOptions = [

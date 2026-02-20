@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { History, FileText, Image, Mic, Video, ChevronRight, RefreshCw } from 'lucide-react'
+import { History, FileText, Image, ScanFace, Music, Video, ChevronRight, RefreshCw } from 'lucide-react'
 import { cn } from '@utils/cn'
 import { ROUTES } from '@utils/constants'
 import { getTimeAgo, truncateText } from '@utils/helpers'
@@ -13,8 +13,9 @@ import Card from '@components/common/Card'
 const typeIcons = {
   text: FileText,
   image: Image,
-  audio: Mic,
+  deepfake: ScanFace,
   video: Video,
+  audio: Music,
 }
 
 /**

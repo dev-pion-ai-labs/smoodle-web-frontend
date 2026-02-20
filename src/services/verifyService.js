@@ -106,6 +106,35 @@ export async function verifyVideo(file, onProgress) {
 }
 
 /**
+ * Verify file for deepfake content (image or video)
+ * @param {File} file - Image or video file to verify
+ * @param {function} onProgress - Progress callback (0-100)
+ * @returns {Promise<object>} Verification result
+ */
+export async function verifyDeepfake(file, onProgress) {
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await api.post('/verify/deepfake', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      timeout: 300000, // 5 minutes (supports video)
+      onUploadProgress: (progressEvent) => {
+        if (onProgress && progressEvent.total) {
+          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          onProgress(progress)
+        }
+      },
+    })
+    return response.data
+  } catch (error) {
+    throw error.response?.data?.message || error.response?.data?.detail || 'Deepfake verification failed'
+  }
+}
+
+/**
  * Get verification history
  * @param {number} page - Page number (1-indexed)
  * @param {number} limit - Items per page
@@ -158,6 +187,7 @@ export default {
   verifyImage,
   verifyAudio,
   verifyVideo,
+  verifyDeepfake,
   getHistory,
   getVerification,
   deleteVerification,

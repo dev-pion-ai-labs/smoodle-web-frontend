@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { FileText, Image, Mic, Video, Coins } from 'lucide-react'
+import { FileText, Image, ScanFace, Video, Music, Coins } from 'lucide-react'
 import { cn } from '@utils/cn'
 import { CREDIT_COSTS } from '@utils/constants'
 import { useAuthStore } from '@store/authStore'
@@ -15,8 +15,9 @@ import UpgradeCreditsModal from '@components/payment/UpgradeCreditsModal'
 const tabs = [
   { id: 'text', label: 'Text', icon: FileText, cost: CREDIT_COSTS.text },
   { id: 'image', label: 'Image', icon: Image, cost: CREDIT_COSTS.image },
-  { id: 'audio', label: 'Audio', icon: Mic, cost: CREDIT_COSTS.audio },
+  { id: 'deepfake', label: 'Deepfake', icon: ScanFace, cost: CREDIT_COSTS.deepfake },
   { id: 'video', label: 'Video', icon: Video, cost: CREDIT_COSTS.video },
+  { id: 'audio', label: 'Music', icon: Music, cost: CREDIT_COSTS.audio, comingSoon: true },
 ]
 
 export default function Dashboard() {
@@ -104,16 +105,22 @@ export default function Dashboard() {
                       >
                         <Icon className="w-4 h-4" />
                         <span>{tab.label}</span>
-                        <span
-                          className={cn(
-                            'px-1.5 py-0.5 text-xs rounded-md font-mono',
-                            isActive
-                              ? 'bg-primary/10 text-primary'
-                              : 'bg-gray/10 text-gray'
-                          )}
-                        >
-                          {tab.cost}
-                        </span>
+                        {tab.comingSoon ? (
+                          <span className="px-1.5 py-0.5 text-xs rounded-md bg-amber-100 text-amber-600 font-medium">
+                            Soon
+                          </span>
+                        ) : (
+                          <span
+                            className={cn(
+                              'px-1.5 py-0.5 text-xs rounded-md font-mono',
+                              isActive
+                                ? 'bg-primary/10 text-primary'
+                                : 'bg-gray/10 text-gray'
+                            )}
+                          >
+                            {tab.cost}
+                          </span>
+                        )}
                       </button>
                     )
                   })}
@@ -132,11 +139,24 @@ export default function Dashboard() {
                       onInsufficientCredits={handleInsufficientCredits}
                     />
                   )}
-                  {activeTab === 'audio' && (
+                  {activeTab === 'deepfake' && (
                     <FileVerifier
-                      type="audio"
+                      type="deepfake"
                       onInsufficientCredits={handleInsufficientCredits}
                     />
+                  )}
+                  {activeTab === 'audio' && (
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                      <div className="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center mb-4">
+                        <Music className="w-8 h-8 text-amber-500" />
+                      </div>
+                      <h3 className="font-heading text-lg font-semibold text-dark mb-2">
+                        Music Detection — Coming Soon
+                      </h3>
+                      <p className="text-gray text-sm max-w-sm">
+                        AI music detection (Suno, Udio, etc.) is not yet available. We're working on bringing this feature to you soon.
+                      </p>
+                    </div>
                   )}
                   {activeTab === 'video' && (
                     <FileVerifier
