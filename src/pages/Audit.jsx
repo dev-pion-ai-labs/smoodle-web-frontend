@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import { Upload, FileText, Coins, AlertCircle, ShieldCheck } from 'lucide-react'
+import { useParams, Link } from 'react-router-dom'
+import { Upload, FileText, Coins, AlertCircle, ShieldCheck, Clock } from 'lucide-react'
 import { cn } from '@utils/cn'
-import { AUDIT_CREDIT_COST } from '@utils/constants'
+import { AUDIT_CREDIT_COST, ROUTES } from '@utils/constants'
 import { getAuditStatus } from '@services/auditService'
 import { useAuthStore } from '@store/authStore'
 import DashboardLayout from '@components/layout/DashboardLayout'
 import Card from '@components/common/Card'
 import { AuditFileSubmit, AuditTextSubmit, AuditProgressTracker, AuditResult } from '@components/audit'
 import UpgradeCreditsModal from '@components/payment/UpgradeCreditsModal'
+import logoImg from '@assets/logo.png'
 
 const tabs = [
   { id: 'file', label: 'Upload Document', icon: Upload },
@@ -17,7 +18,7 @@ const tabs = [
 
 export default function Audit() {
   const { auditId } = useParams()
-  const [view, setView] = useState('submit') // submit | processing | result
+  const [view, setView] = useState(auditId ? 'loading' : 'submit') // loading | submit | processing | result
   const [activeTab, setActiveTab] = useState('file')
   const [currentAuditId, setCurrentAuditId] = useState(null)
   const [auditResult, setAuditResult] = useState(null)
@@ -34,6 +35,7 @@ export default function Audit() {
   // Deep-link: load audit by URL param
   useEffect(() => {
     if (auditId) {
+      setView('loading')
       loadAudit(auditId)
     }
   }, [auditId])
@@ -95,14 +97,42 @@ export default function Audit() {
             </p>
           </div>
 
-          {/* Credit Balance */}
-          <div className="flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-xl">
-            <Coins className="w-5 h-5 text-primary" />
-            <span className="text-dark font-medium">
-              <span className="font-heading font-bold text-primary">{credits}</span> credits
-            </span>
+          <div className="flex items-center gap-3">
+            {/* Audit History Link */}
+            <Link
+              to={ROUTES.AUDIT_HISTORY}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray hover:text-primary border border-gray/20 hover:border-primary/30 rounded-xl transition-all duration-200"
+            >
+              <Clock className="w-4 h-4" />
+              <span>Audit History</span>
+            </Link>
+
+            {/* Credit Balance */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-xl">
+              <Coins className="w-5 h-5 text-primary" />
+              <span className="text-dark font-medium">
+                <span className="font-heading font-bold text-primary">{credits}</span> credits
+              </span>
+            </div>
           </div>
         </div>
+
+        {/* Loading View */}
+        {view === 'loading' && (
+          <div className="flex flex-col items-center justify-center py-24">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
+              <img
+                src={logoImg}
+                alt="Smoodle"
+                className="w-16 h-16 rounded-full object-cover relative z-10 animate-pulse"
+              />
+            </div>
+            <p className="mt-6 text-gray text-sm font-medium animate-pulse">
+              Loading audit...
+            </p>
+          </div>
+        )}
 
         {/* Submit View */}
         {view === 'submit' && (
