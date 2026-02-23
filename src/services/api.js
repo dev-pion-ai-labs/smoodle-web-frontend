@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { API_BASE_URL } from '@utils/constants'
+import { useAuthStore } from '@store/authStore'
 
 // Create axios instance with base configuration
 const api = axios.create({
@@ -25,6 +26,18 @@ const processQueue = (error, token = null) => {
   failedQueue = []
 }
 
+/**
+ * Extract tokens from refresh response.
+ * Handles both { data: { access_token, refresh_token } } and { access_token, refresh_token } formats.
+ */
+function extractTokens(responseData) {
+  const tokenData = responseData?.data || responseData
+  return {
+    access_token: tokenData?.access_token,
+    refresh_token: tokenData?.refresh_token,
+  }
+}
+
 // Request interceptor - attach Bearer token
 api.interceptors.request.use(
   (config) => {
@@ -42,7 +55,6 @@ api.interceptors.request.use(
 // Response interceptor - handle 401 and token refresh
 api.interceptors.response.use(
   (response) => {
-    // Return the data directly for convenience
     return response
   },
   async (error) => {
@@ -73,35 +85,41 @@ api.interceptors.response.use(
     const refreshToken = localStorage.getItem('refresh_token')
 
     if (!refreshToken) {
-      // No refresh token, clear auth and redirect
       clearAuthAndRedirect()
       return Promise.reject(error)
     }
 
     try {
-      // Attempt to refresh the token
+      // Attempt to refresh the token using raw axios (not the api instance, to avoid interceptor loop)
       const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
         refresh_token: refreshToken,
       })
 
-      const { access_token, refresh_token: newRefreshToken } = response.data.data
+      const { access_token, refresh_token: newRefreshToken } = extractTokens(response.data)
 
-      // Store new tokens
+      // Validate that we got a valid access token back
+      if (!access_token) {
+        throw new Error('No access token in refresh response')
+      }
+
+      // Store new tokens in localStorage
       localStorage.setItem('access_token', access_token)
       if (newRefreshToken) {
         localStorage.setItem('refresh_token', newRefreshToken)
       }
 
+      // Sync tokens to Zustand store so UI components stay in sync
+      useAuthStore.getState().setTokens(access_token, newRefreshToken || refreshToken)
+
       // Update authorization header
       api.defaults.headers.common.Authorization = `Bearer ${access_token}`
       originalRequest.headers.Authorization = `Bearer ${access_token}`
 
-      // Process queued requests
+      // Process queued requests with new token
       processQueue(null, access_token)
 
       return api(originalRequest)
     } catch (refreshError) {
-      // Refresh failed, clear auth and redirect
       processQueue(refreshError, null)
       clearAuthAndRedirect()
       return Promise.reject(refreshError)
@@ -113,9 +131,15 @@ api.interceptors.response.use(
 
 // Clear auth state and redirect to login
 function clearAuthAndRedirect() {
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
-  localStorage.removeItem('user')
+  // Clear Zustand store (also clears localStorage)
+  try {
+    useAuthStore.getState().logout()
+  } catch {
+    // Fallback to manual cleanup if store isn't available
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
+    localStorage.removeItem('user')
+  }
 
   // Only redirect if not already on auth pages
   const authPages = ['/login', '/signup', '/verify-otp', '/forgot-password', '/reset-password']
